@@ -1,4 +1,4 @@
 # Group_06
-64086@novasbe.pt
-64550@novasbe.pt
-64092@novasbe.pt
+João Meireles - 64086@novasbe.pt  
+Afonso Silva - 64550@novasbe.pt  
+Marta Tomaz - 64092@novasbe.pt
