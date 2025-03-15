@@ -166,6 +166,20 @@ class MovieData:
         else:
             return pd.DataFrame()
 
+    def releases(self, genre=None):
+        """Returns a DataFrame counting movies released per year, optionally filtering by genre."""
+        if self.movie_df is None or 'Movie_release_Date' not in self.movie_df.columns:
+            raise ValueError("Movie data not loaded correctly.")
+        
+        df = self.movie_df.copy()
+        df['Year'] = pd.to_datetime(df['Movie_release_Date'], errors='coerce').dt.year
+        df = df.dropna(subset=['Year'])
+        
+        if genre:
+            df = df[df['Movie_genres'].str.contains(genre, na=False, case=False)]
+        
+        return df.groupby('Year').size().reset_index(name='Movie_Count')
+
     def actor_count(self) -> pd.DataFrame:
         """Returns the distribution of the number of actors per movie."""
         print("DEBUG: Checking if character_df is loaded...")
@@ -188,6 +202,21 @@ class MovieData:
         
         return actor_count_df
     
+    def ages(self, unit='Y'):
+        """Returns a DataFrame counting actor births per year ('Y') or month ('M')."""
+        if self.character_df is None or 'Actor_date_of_birth' not in self.character_df.columns:
+            raise ValueError("Character data not loaded correctly.")
+        
+        df = self.character_df.copy()
+        df['Date'] = pd.to_datetime(df['Actor_date_of_birth'], errors='coerce')
+        
+        if unit == 'M':
+            df['Month'] = df['Date'].dt.month
+            return df.groupby('Month').size().reset_index(name='Birth_Count')
+        else:
+            df['Year'] = df['Date'].dt.year
+            return df.groupby('Year').size().reset_index(name='Birth_Count')
+
     def actor_distributions(self, gender="all", min_height=150, max_height=200, plot=False) -> pd.DataFrame:
         """Returns actors filtered by gender and height range."""
         if self.character_df is None or self.character_df.empty:
