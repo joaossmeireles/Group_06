@@ -133,6 +133,10 @@ class MovieData:
 
         # Clean up height data and standardize gender values
         self.character_df['Actor_height'] = pd.to_numeric(self.character_df['Actor_height'], errors='coerce')
+        self.character_df.loc[self.character_df["Actor_height"] < 10, "Actor_height"] *= 100
+        print("DEBUG: Heights After Conversion to CM:")
+        print(self.character_df["Actor_height"].unique())
+
         self.character_df['Actor_Gender'] = (
             self.character_df['Actor_Gender']
             .fillna("unknown")
@@ -164,13 +168,24 @@ class MovieData:
 
     def actor_count(self) -> pd.DataFrame:
         """Returns the distribution of the number of actors per movie."""
-        if self.character_df is not None or self.character_df.empty:
+        print("DEBUG: Checking if character_df is loaded...")
+        if self.character_df is None or self.character_df.empty:
             logging.error("character_df is None or empty. Data not loaded")
             return pd.DataFrame()
-        actor_count_df = (self.character_df.groupby("Wikipedia_movie_ID")
-                              .size()
-                              .reset_index(name="Movie Count")
-                              .rename(columns={"Wikipedia_movie_ID": "Number of Actors"}))
+        print("DEBUG: First 5 rows of character_df before actor count:")
+        print(self.character_df.head(5))
+
+        actor_count_df = (
+            self.character_df.groupby("Wikipedia_movie_ID")  # Count actors per movie
+            .size()
+            .reset_index(name="Number of Actors"))  # Rename column
+        actor_count_df = (
+            actor_count_df.groupby("Number of Actors")
+            .size()
+            .reset_index(name="Movie Count"))  # Rename for clarity
+        print("DEBUG: First 5 rows of actor_count_df:")
+        print(actor_count_df.head(5))
+        
         return actor_count_df
     
     def actor_distributions(self, gender="all", min_height=150, max_height=200, plot=False) -> pd.DataFrame:
@@ -187,10 +202,12 @@ class MovieData:
             .fillna(self.character_df['Actor_Gender'])
         )
 
+        print("DEBUG: Unique Heights Before Filtering:", self.character_df["Actor_height"].unique())
         filtered_df = self.character_df[
             (self.character_df['Actor_height'] >= min_height) &
             (self.character_df['Actor_height'] <= max_height)
         ]
+        print("DEBUG: Unique Heights After Filtering:", filtered_df["Actor_height"].unique())
 
         if gender.lower() != "all":
             filtered_df = filtered_df[filtered_df['Actor_Gender'].str.lower() == gender.lower()]

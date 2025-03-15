@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from moviedata_test1 import MovieData
+import numpy as np
 
 # Initialize the MovieData class
 data = MovieData()
@@ -32,14 +33,16 @@ st.write("DEBUG: Raw character DataFrame (first 5 rows):", data.character_df.hea
 st.write("DEBUG: actor_count_df (first 5 rows):", actor_count_df.head())
 
 if not actor_count_df.empty:
-    fig, ax = plt.subplots()
-    ax.bar(actor_count_df["Movie ID"], actor_count_df["Movie Count"], color='lightcoral')
-    ax.set_xlabel("Movie ID")
-    ax.set_ylabel("Number of Actors")
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.bar(actor_count_df["Number of Actors"], actor_count_df["Movie Count"], color='lightcoral', width=0.8)
+    ax.set_xlabel("Number of Actors")
+    ax.set_ylabel("Movie Count")
     ax.set_title("Actor Count Distribution")
+    ax.set_yscale("log")
     st.pyplot(fig)
 else:
     st.warning("No actor count data available.")
+
 
 
 # --- Actor Height Distribution ---
