@@ -1,7 +1,7 @@
 import streamlit as st 
 import pandas as pd
 import matplotlib.pyplot as plt
-from moviedata_test1 import MovieData
+from moviedata_final import MovieData
 import numpy as np
 
 # Initialize the MovieData class
