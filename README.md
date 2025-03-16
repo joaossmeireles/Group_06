@@ -12,15 +12,16 @@ Run the following command:
 
 ```bash
 pip install -r requirements.txt
+```
 
 ### **Running the App**
 To start the Streamlit app with the Llama model, run:
 
 ```bash
 "C:\Program Files\Python312\python.exe" -m streamlit run app_final_1.py
+```
 
-
-## How This Project Supports the UN's Sustainable Development Goals (SDGs)
+### **How This Project Supports the UN's Sustainable Development Goals (SDGs)**
 
 This movie genre classification project aligns with several **United Nations Sustainable Development Goals (SDGs)**:
 
